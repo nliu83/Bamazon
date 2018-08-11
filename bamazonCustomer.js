@@ -25,7 +25,9 @@ function displayProducts() {
     console.log('Hi. Database succuessfully connected');
 
 
-    connection.query('SELECT item_id, product_name, price FROM bamazon.products', function(err, res) {
+    connection.query('SELECT item_id, product_name, price FROM bamazon.products', 
+    
+    function(err, res) {
         if (err) throw err;
         // console.log('item ID: ' + res[2].item_id + ' | Product name: ' + res[2].product_name + ' | Price: $' + res[2].price)
 
@@ -65,10 +67,10 @@ function itemsToBuy () {
     ])
     .then(function(answer) {
 
-        console.log(answer.item_id);
         var chosenID =  parseInt(answer.item_id);
         var chosenQuantity = parseInt(answer.pQuantity);
-        connection.query('SELECT * FROM bamazon.products WHERE item_id = ?', 
+
+        connection.query('SELECT * FROM bamazon.products', 
 
         {
             item_id: answer.item_id
@@ -79,13 +81,47 @@ function itemsToBuy () {
             if (err) throw err;
 
             console.log('User wants to purchase Item-id: ' + chosenID);
-            console.log('Quantity: ' + chosenQuantity);
-            
-            
+            console.log('Chosen Quantity: ' + chosenQuantity);
         
-            console.log('item ID: ' + res[chosenID].product_name);
-
+            console.log('item ID: ' + res[chosenID-1].product_name);
+            console.log('Stock Quantity: ' + res[chosenID-1].stock_quantity);
     
+            if (chosenQuantity > res[chosenID-1].stock_quantity) {
+                console.log('Insufficient Quantity!');
+            }
+            else {
+                connection.query(
+                    'UPDATE bamazon.products SET ? WHERE ?', 
+                    [
+                    {
+                        stock_quantity: (res[chosenID-1].stock_quantity) - (chosenQuantity)
+
+                    }, 
+                    
+                    {
+                        item_id: chosenID
+                    }
+                    ], 
+                    function(error) {
+                        if(error) throw err;
+
+                        connection.query(
+                            'SELECT * FROM bamazon.products', 
+
+                            function(err, res) {
+
+                            console.log('Success! There are ' + res[chosenID-1].stock_quantity + ' more left');
+
+                        });
+
+                       
+                    }
+                    
+                )
+
+                
+            }
+
         });
     });
 };
