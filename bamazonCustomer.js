@@ -29,7 +29,6 @@ function displayProducts() {
     
     function(err, res) {
         if (err) throw err;
-        // console.log('item ID: ' + res[2].item_id + ' | Product name: ' + res[2].product_name + ' | Price: $' + res[2].price)
 
         for(var i = 0; i < res.length; i++) {
             console.log('item ID: ' + res[i].item_id + ' | Product name: ' + res[i].product_name + ' | Price: $' + res[i].price);
@@ -80,10 +79,10 @@ function itemsToBuy () {
 
             if (err) throw err;
 
-            console.log('User wants to purchase Item-id: ' + chosenID);
-            console.log('Chosen Quantity: ' + chosenQuantity);
+            console.log('You want to purchase Item-id: ' + chosenID);
+            console.log('Quantity: ' + chosenQuantity);
         
-            console.log('item ID: ' + res[chosenID-1].product_name);
+            console.log('Product Name: ' + res[chosenID-1].product_name);
             console.log('Stock Quantity: ' + res[chosenID-1].stock_quantity);
     
             if (chosenQuantity > res[chosenID-1].stock_quantity) {
@@ -110,16 +109,15 @@ function itemsToBuy () {
 
                             function(err, res) {
 
-                            console.log('Success! There are ' + res[chosenID-1].stock_quantity + ' more left');
+                            console.log('Success! There are ' + res[chosenID-1].stock_quantity + ' more left' )
+                            ;
 
                         });
-
                        
                     }
-                    
+         
                 )
-
-                
+     
             }
 
         });
